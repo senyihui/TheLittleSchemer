@@ -1,0 +1,98 @@
+#lang scheme
+(define atom?
+ (lambda (x)
+    (and (not (pair? x)) (not (null? x)))))  
+
+; judge if every elem in lat is an atom
+(define lat?
+  (lambda (l)
+    (cond
+      ((null? l)#t)
+      ((atom? (car l))(lat? (cdr l)))
+      (else #f))))
+
+; (lat? 'a b c)
+
+; remove the first elem that equals augment a in lat
+(define rember
+  (lambda (a lat)
+    (cond
+      ((null? lat) (quote()))
+      (else (cond
+        ((eq? (car lat) a) (cdr lat))
+        (else (cons (car lat)(rember a
+                      (cdr lat)))))))))
+
+;(rember 'a '(b a c d))
+
+; returm a list that consists of the first elem of each list in l
+(define firsts
+  (lambda (l)
+    (cond
+      ((null? l) (quote()))
+      (else (cons (car (car l)) (firsts (cdr l)))))))
+
+
+;(firsts '((apple peach pumpkin)
+;          (plum pear cherry)
+;          (grape raisin pea)
+;          (bean carrot eggplant)))
+
+; insert after the old elem
+(define insertR
+  (lambda (new old lat)
+    (cond
+      ((null? lat) (quote()))
+      ((eq? (car lat) old)
+       (cons old (cons new (cdr lat))))
+      (else (cons (car lat) (insertR new old
+                                        (cdr lat)))))))
+
+;(insertR
+;  'topping 'fudge
+;  '(ice cream with fudge for dessert)) ;
+
+; insert before the old elem
+(define insertL
+  (lambda (new old lat)
+    (cond
+      ((null? lat) (quote()))
+      ((eq? (car lat) old)
+       (cons new lat))
+      (else (cons (car lat) (insertL new old
+                                        (cdr lat)))))))
+
+;(insertL
+;  'topping 'fudge
+;  '(ice cream with fudge for dessert)) ;
+
+; remove all the elem that equals augment a in lat
+(define multirember
+  (lambda (a lat)
+    (cond
+      ((null? lat) (quote()))
+      (else (cond
+        ((eq? (car lat) a) (multirember a (cdr lat)))
+        (else (cons (car lat)(multirember a
+                      (cdr lat)))))))))
+
+;(multirember 'a '(b a c d a c a))
+
+; insert after the old elem
+(define multiinsertR
+  (lambda (new old lat)
+    (cond
+      ((null? lat) (quote()))
+      ((eq? (car lat) old)
+       (cons old (cons new
+                       (multiinsertR new old (cdr lat)))))
+      (else (cons (car lat) (multiinsertR new old
+                                        (cdr lat)))))))
+
+(multiinsertR
+  'topping 'fudge
+  '(ice cream with fudge for fudge dessert));
+
+
+
+
